@@ -1,10 +1,10 @@
 <template>
-  <div class="container p-4 flex flex-col items-center justify-center">
-    <h1 class="text-2xl font-bold mb-4">Image Upload</h1>
+  <div class="w-full max-w-lg">
+    <h1 class="text-4xl font-bold mb-4">ForgeryX</h1>
 
-    <form @submit.prevent="handleSubmit" class="w-full max-w-lg">
+    <form @submit.prevent="handleSubmit" class="w-full">
       <div class="grid w-full items-center gap-1.5">
-        <Label for="image">Image</Label>
+        <Label for="image" class="mb-2">Chọn ảnh</Label>
         <Input
           id="image"
           type="file"
@@ -12,22 +12,28 @@
           accept="image/*"
         />
       </div>
-      <Button type="submit" class="mt-4 w-full" :disabled="!selectedFile">
-        Upload Image
+      <Button
+        type="submit"
+        class="mt-4 w-full"
+        :disabled="!selectedFile || isUploading"
+      >
+        <template v-if="isUploading">
+          <LoaderCircle class="animate-spin h-5 w-5 mx-auto" />
+        </template>
+        <template v-else> Tải ảnh lên </template>
       </Button>
     </form>
 
     <div v-if="selectedFile" class="mt-4">
       <p class="text-sm text-gray-500 mb-2">
-        Selected file: {{ selectedFile.name }}
+        Ảnh đã chọn: {{ selectedFile.name }} ({{ imageResolution.width }} x
+        {{ imageResolution.height }}), {{ fileSize }} KB
       </p>
-      <div
-        class="w-full max-w-md border border-gray-200 rounded-lg overflow-hidden"
-      >
+      <div class="w-full rounded-lg overflow-hidden">
         <img
           :src="previewUrl"
           alt="Selected image preview"
-          class="w-full h-auto"
+          class="w-full h-64 object-contain"
         />
       </div>
     </div>
@@ -40,9 +46,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/toast";
+import { sseHandler } from "@/utils/sseHandler";
+import { LoaderCircle } from "lucide-vue-next";
 
 const selectedFile = ref(null);
 const previewUrl = ref(null);
+const fileSize = ref(null);
+const imageResolution = ref({ width: 0, height: 0 });
+const isUploading = ref(false);
 const { toast } = useToast();
 
 const handleFileChange = (event) => {
@@ -50,21 +61,21 @@ const handleFileChange = (event) => {
   if (target.files) {
     selectedFile.value = target.files[0];
     previewUrl.value = URL.createObjectURL(selectedFile.value);
+    fileSize.value = (selectedFile.value.size / 1024).toFixed(2);
+
+    const img = new Image();
+    img.onload = () => {
+      imageResolution.value = { width: img.width, height: img.height };
+    };
+    img.src = previewUrl.value;
   }
 };
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   if (!selectedFile.value) return;
-
-  toast({
-    title: "Image selected",
-    description: `You've selected: ${selectedFile.value.name}`,
-  });
-
-  selectedFile.value = null;
-  previewUrl.value = null;
-  const input = document.getElementById("image");
-  if (input) input.value = "";
+  isUploading.value = true;
+  await sseHandler(selectedFile.value);
+  isUploading.value = false;
 };
 
 watch(previewUrl, (newUrl, oldUrl) => {
