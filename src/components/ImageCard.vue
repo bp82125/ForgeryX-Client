@@ -1,21 +1,25 @@
 <template>
   <Card class="overflow-hidden flex flex-col items-center shadow-lg">
     <CardHeader class="grow">
-      <CardTitle class="items-center">{{ image.method_name }}</CardTitle>
+      <CardTitle class="items-center">{{ image.name }}</CardTitle>
     </CardHeader>
 
     <CardContent class="p-0 flex flex-col items-center">
       <img
         :src="fullImagePath"
-        :alt="'Image ' + image.method_name"
+        :alt="'Image ' + image.name"
         class="w-full h-auto object-scale-down"
       />
-      <!-- <p class="m-2 text-center">{{ image.method_name }}</p> -->
-      <template v-if="image.score">
-        <CardFooter class="flex justify-between w-full p-4">
-          <p class="text-left">Độ tin cậy: {{ image.score }}</p>
-        </CardFooter>
-      </template>
+      <CardFooter class="flex justify-between w-full px-4 py-2 grow">
+        <div class="flex justify-between w-full items-center">
+          <p v-if="image.result_type === 'score'" class="text-left">
+            Độ tin cậy: {{ (image.output.score * 100).toFixed(4) }}%
+          </p>
+          <Button class="ml-auto" variant="ghost">
+            <CircleHelp></CircleHelp>
+          </Button>
+        </div>
+      </CardFooter>
     </CardContent>
   </Card>
 </template>
@@ -30,6 +34,9 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 
+import { Button } from "@/components/ui/button";
+import { CircleHelp } from "lucide-vue-next";
+
 const props = defineProps({
   image: {
     type: Object,
@@ -38,6 +45,6 @@ const props = defineProps({
 });
 
 const fullImagePath = computed(() => {
-  return `${import.meta.env.VITE_BASE_URL}/${props.image.output_path}`;
+  return `${import.meta.env.VITE_BASE_URL}/${props.image.output.path}`;
 });
 </script>

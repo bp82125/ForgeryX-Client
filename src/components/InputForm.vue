@@ -24,16 +24,32 @@
       </Button>
     </form>
 
-    <div v-if="selectedFile" class="mt-4">
+    <div v-if="previewUrl" class="mt-4 relative">
       <p class="text-sm text-gray-500 mb-2">
-        Ảnh đã chọn: {{ selectedFile.name }} ({{ imageResolution.width }} x
-        {{ imageResolution.height }}), {{ fileSize }} KB
+        Ảnh đã chọn: {{ fileName }}, {{ fileSize }} KB,
+        {{ imageResolution.width }} x {{ imageResolution.height }}
       </p>
-      <div class="w-full rounded-lg overflow-hidden">
+      <div class="w-full rounded-lg overflow-hidden relative">
+        <Button
+          variant="primary"
+          size="icon"
+          class="absolute top-2 right-2 z-10 rounded-full w-8 h-8 opacity-90 bg-black hover:opacity-80"
+          @click="discardImage"
+        >
+          <X class="h-4 w-4 text-white" />
+        </Button>
+
+        <VueCompareImage
+          v-if="isUrl"
+          :leftImage="previewUrl"
+          :rightImage="convertedImageUrl"
+          class="w-full object-contain"
+        />
         <img
+          v-else
           :src="previewUrl"
           alt="Selected image preview"
-          class="w-full h-64 object-contain"
+          class="w-full object-contain"
         />
       </div>
     </div>
@@ -45,42 +61,106 @@ import { ref, watch } from "vue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/toast";
-import { sseHandler } from "@/utils/sseHandler";
-import { LoaderCircle } from "lucide-vue-next";
+import { upload_image, get_example } from "@/utils/sseHandler";
+import { LoaderCircle, X } from "lucide-vue-next";
+import { VueCompareImage } from "vue3-compare-image";
 
-const selectedFile = ref(null);
+const props = defineProps(["selectedFile"]);
+const emit = defineEmits(["update:selectedFile"]);
+
 const previewUrl = ref(null);
+const convertedImageUrl = ref(null);
 const fileSize = ref(null);
+const fileName = ref(null);
 const imageResolution = ref({ width: 0, height: 0 });
 const isUploading = ref(false);
-const { toast } = useToast();
+const isUrl = ref(false);
+
+const getImageResolution = (url) => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      resolve({ width: img.width, height: img.height });
+    };
+    img.src = url;
+  });
+};
+
+watch(
+  () => props.selectedFile,
+  async (newFile) => {
+    if (!newFile) {
+      previewUrl.value = null;
+      convertedImageUrl.value = null;
+      fileSize.value = null;
+      fileName.value = null;
+      imageResolution.value = { width: 0, height: 0 };
+      isUrl.value = false;
+      return;
+    }
+
+    if (typeof newFile === "string") {
+      isUrl.value = true;
+      previewUrl.value = newFile;
+      convertedImageUrl.value = newFile.replace(/\.jpg$/, ".png");
+      fileName.value = newFile.split("/").pop();
+
+      try {
+        const response = await fetch(newFile, { method: "HEAD" });
+        const contentLength = response.headers.get("content-length");
+        fileSize.value = contentLength
+          ? (contentLength / 1024).toFixed(2)
+          : "N/A";
+      } catch (error) {
+        console.error("Error fetching image size:", error);
+        fileSize.value = "N/A";
+      }
+
+      imageResolution.value = await getImageResolution(previewUrl.value);
+      return;
+    }
+
+    isUrl.value = false;
+    previewUrl.value = URL.createObjectURL(newFile);
+    fileSize.value = (newFile.size / 1024).toFixed(2);
+    fileName.value = newFile.name;
+    imageResolution.value = await getImageResolution(previewUrl.value);
+  },
+  { immediate: true }
+);
 
 const handleFileChange = (event) => {
   const target = event.target;
   if (target.files) {
-    selectedFile.value = target.files[0];
-    previewUrl.value = URL.createObjectURL(selectedFile.value);
-    fileSize.value = (selectedFile.value.size / 1024).toFixed(2);
-
-    const img = new Image();
-    img.onload = () => {
-      imageResolution.value = { width: img.width, height: img.height };
-    };
-    img.src = previewUrl.value;
+    const file = target.files[0];
+    emit("update:selectedFile", file);
   }
+};
+
+const discardImage = () => {
+  previewUrl.value = null;
+  convertedImageUrl.value = null;
+  fileSize.value = null;
+  fileName.value = null;
+  imageResolution.value = { width: 0, height: 0 };
+  isUrl.value = false;
+  emit("update:selectedFile", null);
 };
 
 const handleSubmit = async () => {
-  if (!selectedFile.value) return;
+  if (!props.selectedFile) return;
+
   isUploading.value = true;
-  await sseHandler(selectedFile.value);
+
+  if (isUrl.value) {
+    const match = props.selectedFile.match(/\/([\da-fA-F-]+)\.jpg$/);
+    const uuid = match ? match[1] : null;
+
+    await get_example(uuid);
+  } else {
+    await upload_image(props.selectedFile);
+  }
+
   isUploading.value = false;
 };
-
-watch(previewUrl, (newUrl, oldUrl) => {
-  if (oldUrl) {
-    URL.revokeObjectURL(oldUrl);
-  }
-});
 </script>
