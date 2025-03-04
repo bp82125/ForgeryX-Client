@@ -43,6 +43,11 @@ export const upload_image = async (file) => {
           continue;
         }
 
+        if (parsedData.data.result_type === "metadata") {
+          imageStore.addMetadata(parsedData.data.metadata);
+          continue;
+        }
+
         imageStore.addImage(parsedData.data);
       } catch (error) {
         console.error("Error parsing JSON:", error);
@@ -95,7 +100,15 @@ export const get_example = async (uuid) => {
           continue;
         }
 
-        imageStore.addImage(parsedData.data);
+        if (parsedData.data.result_type === "metadata") {
+          imageStore.addMetadata(parsedData.data.metadata);
+          continue;
+        }
+        
+        if (parsedData.data.result_type) {
+          imageStore.addImage(parsedData.data);
+        }
+
       } catch (error) {
         console.error("Error parsing JSON:", error);
       }

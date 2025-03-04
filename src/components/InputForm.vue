@@ -64,6 +64,9 @@ import { Label } from "@/components/ui/label";
 import { upload_image, get_example } from "@/utils/sseHandler";
 import { LoaderCircle, X } from "lucide-vue-next";
 import { VueCompareImage } from "vue3-compare-image";
+import { useImageStore } from "@/stores/imageStore";
+
+const imageStore = useImageStore();
 
 const props = defineProps(["selectedFile"]);
 const emit = defineEmits(["update:selectedFile"]);
@@ -144,6 +147,7 @@ const discardImage = () => {
   fileName.value = null;
   imageResolution.value = { width: 0, height: 0 };
   isUrl.value = false;
+  imageStore.clearStore();
   emit("update:selectedFile", null);
 };
 

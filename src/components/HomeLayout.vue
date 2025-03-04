@@ -9,6 +9,7 @@
       v-if="!selectedFile"
       @imageSelected="handleExampleSelected"
     />
+    <ImageMetadata></ImageMetadata>
   </div>
 </template>
 
@@ -17,6 +18,7 @@ import { ref } from "vue";
 import InputForm from "@/components/InputForm.vue";
 import ImageGrid from "@/components/ImageGrid.vue";
 import ImageExamples from "./ImageExamples.vue";
+import ImageMetadata from "./ImageMetadata.vue";
 
 const selectedFile = ref(null);
 
