@@ -11,6 +11,7 @@ export const useImageStore = defineStore("image", {
       multi_output: {},
     },
     metadata: {},
+    original: "",
   }),
   actions: {
     addImage(data) {
@@ -42,6 +43,9 @@ export const useImageStore = defineStore("image", {
     },
     addMetadata(metadata) {
       this.metadata = metadata;
+    },
+    addOriginal(original) {
+      this.original = original;
     },
     clearStore() {
       this.$reset();

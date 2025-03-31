@@ -8,14 +8,15 @@
       <img
         :src="fullImagePath"
         :alt="'Image ' + image.name"
-        class="w-full h-auto object-scale-down"
+        class="w-full h-auto object-scale-down cursor-pointer hover:opacity-85"
+        @click="openComparison"
       />
       <CardFooter class="flex justify-between w-full px-4 py-2 grow">
         <div class="flex justify-between w-full items-center">
           <p v-if="image.result_type === 'score'" class="text-left">
             Độ tin cậy: {{ (image.output.score * 100).toFixed(4) }}%
           </p>
-          <Button class="ml-auto" variant="ghost">
+          <Button class="ml-auto" variant="ghost" @click="openModal">
             <CircleHelp></CircleHelp>
           </Button>
         </div>
@@ -36,6 +37,9 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { CircleHelp } from "lucide-vue-next";
+import { useModalStore } from "@/stores/modalStore";
+
+const modalStore = useModalStore();
 
 const props = defineProps({
   image: {
@@ -47,4 +51,12 @@ const props = defineProps({
 const fullImagePath = computed(() => {
   return `${import.meta.env.VITE_BASE_URL}/${props.image.output.path}`;
 });
+
+const openModal = () => {
+  modalStore.openDescriptionModal(props.image.id);
+};
+
+const openComparison = () => {
+  modalStore.openComparisonModal(fullImagePath.value);
+};
 </script>

@@ -9,9 +9,10 @@
         <img
           :src="currentImagePath"
           :alt="'Image ' + currentImage.name"
-          class="w-full h-auto object-scale-down transition-opacity duration-300"
+          class="w-full h-auto object-scale-down transition-opacity duration-300 cursor-pointer hover:opacity-85"
           :class="{ 'opacity-0': isTransitioning }"
           @load="handleImageLoad"
+          @click="openComparison"
         />
       </div>
 
@@ -27,8 +28,8 @@
             @update:model-value="handleSliderChange"
             class="w-full mr-4"
           />
-          <Button variant="ghost" size="icon" class="ml-auto">
-            <CircleHelp />
+          <Button class="ml-auto" variant="ghost" @click="openDescription">
+            <CircleHelp></CircleHelp>
           </Button>
         </div>
       </CardFooter>
@@ -48,6 +49,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { CircleHelp } from "lucide-vue-next";
+import { useModalStore } from "@/stores/modalStore";
+
+const modalStore = useModalStore();
 
 const props = defineProps({
   images: {
@@ -72,6 +76,14 @@ const handleSliderChange = (value) => {
 
 const handleImageLoad = () => {
   isTransitioning.value = false;
+};
+
+const openDescription = () => {
+  modalStore.openDescriptionModal(props.images[0].id);
+};
+
+const openComparison = () => {
+  modalStore.openComparisonModal(currentImagePath.value);
 };
 </script>
 

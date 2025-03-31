@@ -13,7 +13,7 @@
         @click="selectExampleImage(image)"
       >
         <img
-          :src="image"
+          v-bind:src="image"
           :alt="getFileName(image)"
           class="w-full h-full object-scale-down"
         />
@@ -31,11 +31,11 @@ import { ref, onMounted } from "vue";
 const emit = defineEmits(["imageSelected"]);
 const images = ref([]);
 
-const fetchImages = () => {
-  const imageContext = import.meta.glob("/public/example/*.{jpg,jpeg}");
-  images.value = Object.keys(imageContext).map((path) =>
-    path.replace("/public", "")
-  );
+const fetchImages = async () => {
+  const imageContext = import.meta.glob("@/assets/example/*.{jpg,jpeg}", {
+    eager: true,
+  });
+  images.value = Object.values(imageContext).map((mod) => mod.default);
 };
 
 const getFileName = (path) => {

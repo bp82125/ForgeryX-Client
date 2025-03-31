@@ -102,6 +102,8 @@ watch(
       return;
     }
 
+    imageStore.clearStore();
+
     if (typeof newFile === "string") {
       isUrl.value = true;
       previewUrl.value = newFile;
@@ -137,6 +139,7 @@ const handleFileChange = (event) => {
   if (target.files) {
     const file = target.files[0];
     emit("update:selectedFile", file);
+    imageStore.clearStore();
   }
 };
 
