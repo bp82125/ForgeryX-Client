@@ -9,7 +9,7 @@
           id="image"
           type="file"
           @change="handleFileChange"
-          accept="image/*"
+          accept=".jpg,.jpeg,.png,image/jpeg,image/jpg,image/png"
         />
       </div>
       <Button
@@ -35,6 +35,7 @@
           size="icon"
           class="absolute top-2 right-2 z-10 rounded-full w-8 h-8 opacity-90 bg-black hover:opacity-80"
           @click="discardImage"
+          :disabled="isUploading"
         >
           <X class="h-4 w-4 text-white" />
         </Button>
@@ -65,7 +66,9 @@ import { upload_image, get_example } from "@/utils/sseHandler";
 import { LoaderCircle, X } from "lucide-vue-next";
 import { VueCompareImage } from "vue3-compare-image";
 import { useImageStore } from "@/stores/imageStore";
+import { useToast } from "@/components/ui/toast/use-toast";
 
+const { toast } = useToast();
 const imageStore = useImageStore();
 
 const props = defineProps(["selectedFile"]);
@@ -79,6 +82,10 @@ const imageResolution = ref({ width: 0, height: 0 });
 const isUploading = ref(false);
 const isUrl = ref(false);
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const ALLOWED_FILE_TYPES = ["image/jpeg", "image/jpg", "image/png"];
+const ALLOWED_FILE_EXTENSIONS = [".jpg", ".jpeg", ".png"];
+
 const getImageResolution = (url) => {
   return new Promise((resolve) => {
     const img = new Image();
@@ -87,6 +94,32 @@ const getImageResolution = (url) => {
     };
     img.src = url;
   });
+};
+
+const validateFile = (file) => {
+  if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+    toast({
+      title: "Định dạng file không hợp lệ",
+      description: `Vui lòng chọn file có định dạng: ${ALLOWED_FILE_EXTENSIONS.join(
+        ", "
+      )}`,
+      variant: "destructive",
+    });
+    return false;
+  }
+
+  if (file.size > MAX_FILE_SIZE) {
+    toast({
+      title: "Kích thước file quá lớn",
+      description: `Vui lòng chọn file có kích thước nhỏ hơn ${
+        MAX_FILE_SIZE / 1024
+      } KB`,
+      variant: "destructive",
+    });
+    return false;
+  }
+
+  return true;
 };
 
 watch(
@@ -138,6 +171,12 @@ const handleFileChange = (event) => {
   const target = event.target;
   if (target.files) {
     const file = target.files[0];
+
+    if (!validateFile(file)) {
+      target.value = "";
+      return;
+    }
+
     emit("update:selectedFile", file);
     imageStore.clearStore();
   }
@@ -152,6 +191,9 @@ const discardImage = () => {
   isUrl.value = false;
   imageStore.clearStore();
   emit("update:selectedFile", null);
+
+  const fileInput = document.getElementById("image");
+  if (fileInput) fileInput.value = "";
 };
 
 const handleSubmit = async () => {
@@ -159,15 +201,28 @@ const handleSubmit = async () => {
 
   isUploading.value = true;
 
-  if (isUrl.value) {
-    const match = props.selectedFile.match(/\/([\da-fA-F-]+)\.jpg$/);
-    const uuid = match ? match[1] : null;
+  try {
+    if (isUrl.value) {
+      const match = props.selectedFile.match(/\/([\da-fA-F-]+)\.jpg$/);
+      const uuid = match ? match[1] : null;
 
-    await get_example(uuid);
-  } else {
-    await upload_image(props.selectedFile);
+      if (uuid) {
+        await get_example(uuid);
+      } else {
+        throw new Error("Invalid URL format");
+      }
+    } else {
+      await upload_image(props.selectedFile);
+    }
+  } catch (error) {
+    console.error("Error processing image:", error);
+    toast({
+      title: "Lỗi",
+      description: "Đã xảy ra lỗi trong quá trình xử lý ảnh.",
+      variant: "destructive",
+    });
+  } finally {
+    isUploading.value = false;
   }
-
-  isUploading.value = false;
 };
 </script>

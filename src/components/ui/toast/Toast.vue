@@ -1,6 +1,6 @@
 <script setup>
 import { cn } from '@/lib/utils';
-import { ToastRoot, useForwardPropsEmits } from 'radix-vue';
+import { ToastRoot, useForwardPropsEmits } from 'reka-ui';
 import { computed } from 'vue';
 import { toastVariants } from '.';
 

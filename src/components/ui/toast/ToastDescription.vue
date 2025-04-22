@@ -1,6 +1,6 @@
 <script setup>
 import { cn } from '@/lib/utils';
-import { ToastDescription } from 'radix-vue';
+import { ToastDescription } from 'reka-ui';
 import { computed } from 'vue';
 
 const props = defineProps({

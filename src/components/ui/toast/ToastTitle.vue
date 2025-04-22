@@ -1,6 +1,6 @@
 <script setup>
 import { cn } from '@/lib/utils';
-import { ToastTitle } from 'radix-vue';
+import { ToastTitle } from 'reka-ui';
 import { computed } from 'vue';
 
 const props = defineProps({
@@ -19,7 +19,7 @@ const delegatedProps = computed(() => {
 <template>
   <ToastTitle
     v-bind="delegatedProps"
-    :class="cn('text-sm font-semibold', props.class)"
+    :class="cn('text-sm font-semibold [&+div]:text-xs', props.class)"
   >
     <slot />
   </ToastTitle>

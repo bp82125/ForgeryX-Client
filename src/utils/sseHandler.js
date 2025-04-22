@@ -1,4 +1,7 @@
 import { useImageStore } from "@/stores/imageStore";
+import { useToast } from "@/components/ui/toast/use-toast";
+
+const { toast } = useToast();
 
 const process_response = async (response) => {
   const imageStore = useImageStore();
@@ -14,6 +17,8 @@ const process_response = async (response) => {
     const { value, done } = await reader.read();
     if (done) break;
 
+    console.log(value);
+
     try {
       const trimmedValue = value
         .trim()
@@ -23,7 +28,13 @@ const process_response = async (response) => {
 
       const parsedData = JSON.parse(trimmedValue);
 
-      console.log("Parsed data:", parsedData);
+      if (parsedData.message) {
+        toast({
+          title: "Cập nhật quá trình xử lý",
+          description: parsedData.message,
+          duration: 2000,
+        });
+      }
 
       if (!parsedData?.data) {
         console.error("Invalid response format:", parsedData);
