@@ -8,7 +8,7 @@
       </DialogDescription>
     </DialogHeader>
 
-    <div class="space-y-4 text-sm py-2 overflow-y-auto flex-1">
+    <div class="space-y-4 text-sm py-2 overflow-y-auto flex-1 text-justify">
       <div class="space-y-2">
         <p>
           Khi áp dụng phương pháp này, ảnh đầu vào được biến đổi bằng wavelet

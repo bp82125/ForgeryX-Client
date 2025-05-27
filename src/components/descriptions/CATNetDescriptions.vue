@@ -3,12 +3,12 @@
     <DialogHeader class="flex-shrink-0 py-2">
       <DialogTitle>CAT-Net</DialogTitle>
       <DialogDescription>
-        Compression Artifact Tracing Network for Detection and Localization of
-        Image Splicing
+        Mạng nơ-ron theo dõi dấu vết nén để phát hiện và xác định vị trí ghép
+        của các ảnh
       </DialogDescription>
     </DialogHeader>
 
-    <div class="space-y-4 text-sm py-2 overflow-y-auto flex-1">
+    <div class="space-y-4 text-sm py-2 overflow-y-auto flex-1 text-justify">
       <div class="space-y-2">
         <div class="space-y-2">
           <img

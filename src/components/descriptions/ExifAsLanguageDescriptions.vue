@@ -3,16 +3,16 @@
     <DialogHeader class="flex-shrink-0 py-2">
       <DialogTitle>EXIF as Language</DialogTitle>
       <DialogDescription>
-        Mạng nơ-ron truy dấu dấu vết nén của anh cho việc phát hiện và khoanh
-        vùng các khu vực bị ghép nối
+        Phát hiện ảnh bị chỉnh sửa bằng cách sử dụng mối liên hệ giữa ảnh và
+        thông tin metadata của máy ảnh
       </DialogDescription>
     </DialogHeader>
 
-    <div class="space-y-4 text-sm py-2 overflow-y-auto flex-1">
+    <div class="space-y-4 text-sm py-2 overflow-y-auto flex-1 text-justify">
       <div class="space-y-2">
         <div class="space-y-2">
           <img
-            src="@/assets/descriptions/exif_as_language/1.png"
+            src="@/assets/descriptions/exif_as_language.png"
             alt="EXIF as Language Overview"
             class="w-full rounded-lg shadow"
           />
@@ -21,45 +21,35 @@
           </p>
         </div>
         <p>
-          EXIF metadata không chỉ lưu trữ thông tin về máy ảnh và điều kiện chụp
-          mà còn có thể được khai thác như một dạng ngôn ngữ để phân tích hình
-          ảnh. Phương pháp "EXIF as Language" chuyển đổi metadata trong ảnh
-          thành văn bản bằng cách kết hợp các thẻ và giá trị thành chuỗi có cấu
-          trúc, ví dụ: "Make: Nikon, Model: D3200, Focal Length: 30.0mm,
-          Exposure Time: 1/500 sec". Sau đó, thông tin này được xử lý bằng mô
-          hình transformer, tương tự như cách các hệ thống AI xử lý ngôn ngữ tự
-          nhiên.
+          Mỗi bức ảnh kỹ thuật số thường kèm theo thông tin EXIF – một loại dữ
+          liệu ẩn lưu trữ các thông số như loại máy ảnh, độ dài tiêu cự, tốc độ
+          chụp, khẩu độ… Những thông tin này vốn dùng để quản lý hoặc hiển thị
+          ảnh, nhưng trong phương pháp "EXIF as Language", chúng được tận dụng
+          như một dạng ngôn ngữ mô tả bức ảnh. Cụ thể, trong quá trình huấn
+          luyện mô hình, các thông số EXIF được chuyển thành những câu văn ngắn
+          có cấu trúc, ví dụ: “Make: Nikon, Model: D3200, Focal Length: 30.0mm,
+          Exposure Time: 1/500 sec”. Đồng thời, ảnh cũng được chia thành nhiều
+          vùng nhỏ, và mỗi vùng được trích xuất đặc trưng riêng. Mô hình sau đó
+          học cách ghép nối từng vùng ảnh với chuỗi mô tả EXIF tương ứng, sao
+          cho đặc điểm thị giác của vùng ảnh phải "phù hợp" với thông tin thiết
+          bị đã ghi trong metadata. Việc kết hợp hai luồng thông tin – hình ảnh
+          và văn bản mô tả EXIF – giúp mô hình hiểu sâu hơn về đặc trưng của các
+          thiết bị chụp ảnh khác nhau.
         </p>
-        <div class="space-y-2">
-          <img
-            src="@/assets/descriptions/exif_as_language/2.png"
-            alt="Cross-modal image and photo metadata training"
-            class="w-full rounded-lg shadow"
-          />
-          <p class="text-center text-xs text-gray-500">
-            Hình 2: Huấn luyện mô hình cross-modal giữa hình ảnh và metadata
-          </p>
-        </div>
+
         <p>
-          Hệ thống sử dụng hai bộ mã hóa (encoders): một bộ xử lý hình ảnh để
-          trích xuất đặc trưng từ từng vùng nhỏ trong ảnh và một bộ mã hóa ngôn
-          ngữ để phân tích EXIF metadata. Cả hai hoạt động trong cùng một không
-          gian biểu diễn, giúp mô hình học được mối quan hệ giữa nội dung hình
-          ảnh và thông tin camera. Nhờ đó, hệ thống có thể phát hiện ảnh bị
-          chỉnh sửa bằng cách tìm kiếm sự khác biệt giữa các vùng ảnh: nếu một
-          bức ảnh chứa nội dung từ nhiều nguồn khác nhau, embedding của các vùng
-          ảnh sẽ không đồng nhất.
+          Sau khi đã được huấn luyện, mô hình không còn cần tới EXIF metadata
+          nữa. Ở giai đoạn dự đoán, mô hình chỉ cần một bức ảnh đầu vào. Ảnh sẽ
+          được chia nhỏ thành nhiều vùng (patch), và mỗi vùng được chuyển thành
+          một vector thể hiện đặc trưng của thiết bị chụp ảnh (mà mô hình đã học
+          được từ trước). Nếu toàn bộ ảnh được chụp bởi cùng một máy ảnh, các
+          vùng này thường có đặc trưng tương đồng. Tuy nhiên, nếu ảnh bị cắt
+          ghép từ nhiều nguồn khác nhau (ví dụ: mặt người từ ảnh này ghép vào
+          nền ảnh khác), thì các vùng tương ứng sẽ có đặc trưng không khớp với
+          nhau. Mô hình sẽ phát hiện sự không đồng nhất này bằng cách tạo một
+          bản đồ thể hiện mức độ "tương đồng nội bộ" giữa các vùng trong ảnh, từ
+          đó đánh dấu những vùng nghi vấn đã bị chỉnh sửa.
         </p>
-        <div class="space-y-2">
-          <img
-            src="@/assets/descriptions/exif_as_language/3.png"
-            alt="Detecting edited regions without metadata"
-            class="w-full rounded-lg shadow"
-          />
-          <p class="text-center text-xs text-gray-500">
-            Hình 3: Phát hiện vùng ảnh bị chỉnh sửa mà không cần metadata
-          </p>
-        </div>
       </div>
 
       <div class="pt-2 border-t">
@@ -73,35 +63,6 @@
             >
               EXIF as Language: Learning Cross-Modal Associations Between Images
               and Camera Metadata
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://arxiv.org/pdf/2103.00020"
-              target="_blank"
-              class="text-blue-600 hover:underline"
-            >
-              Learning Transferable Visual Models From Natural Language
-              Supervision
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://arxiv.org/pdf/1910.01108"
-              target="_blank"
-              class="text-blue-600 hover:underline"
-            >
-              DistilBERT, a distilled version of BERT: smaller, faster, cheaper
-              and lighter
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://arxiv.org/pdf/1512.03385"
-              target="_blank"
-              class="text-blue-600 hover:underline"
-            >
-              Deep Residual Learning for Image Recognition
             </a>
           </li>
         </ul>

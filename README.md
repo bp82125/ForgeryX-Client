@@ -1,5 +1,86 @@
-# Vue 3 + Vite
+# ForgeryX (Client)
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+ForgeryX is an image forensics tool designed to detect manipulated images. This repository contains the client-side component built with Vue.js, which provides an intuitive user interface for uploading images and visualizing forgery detection results. It works in conjunction with the ForgeryX server to deliver comprehensive image analysis capabilities.
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+Check out: [ForgeryX (Server)](https://github.com/bp82125/ForgeryX-Server)
+
+## Technologies Used
+
+- **Vue.js**: Progressive JavaScript framework for building user interfaces
+- **Tailwind CSS**: Utility-first CSS framework for styling
+- **shadcn-vue**: Vue port of shadcn/ui components for consistent UI design
+- **Vite**: Fast build tool and development server
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js version 16 or higher
+- npm or yarn package manager
+
+## Installation
+
+### Clone the ForgeryX (Client) Repository
+
+```bash
+git clone https://github.com/bp82125/ForgeryX-Client.git
+cd ForgeryX-Client
+```
+
+### Install Project Dependencies
+
+```bash
+# Install the required packages
+npm install
+```
+
+### Environment Configuration
+
+Copy the example environment file and configure it for your setup:
+
+```bash
+cp .env.example .env
+```
+
+Update the `.env` file with your server configuration:
+
+```env
+VITE_API_URL=http://localhost:8000/api/v1
+VITE_BASE_URL=http://localhost:8000
+```
+
+- `VITE_API_URL`: The API endpoint URL for the ForgeryX server
+- `VITE_BASE_URL`: The base URL for the ForgeryX server
+
+## Run the Project
+
+Once the environment is set up, you can start the development server:
+
+```bash
+npm run dev
+```
+
+This will launch the application in development mode. You should see an output similar to:
+
+```bash
+  VITE v6.x.x  ready in xxx ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+```
+
+The application will be available at `http://localhost:5173/` by default.
+
+## Build for Production
+
+To build the application for production:
+
+```bash
+npm run build
+```
+
+The built files will be generated in the `dist/` directory.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

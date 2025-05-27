@@ -3,16 +3,16 @@
     <DialogHeader class="flex-shrink-0 py-2">
       <DialogTitle>Mesorch</DialogTitle>
       <DialogDescription>
-        Orchestrating Multi-scale & Hybrid Architecture for Image Manipulation
-        Localization
+        Phối hợp kiến trúc lai giữa CNN và Transformer để xác định vị trí chỉnh
+        sửa trong ảnh
       </DialogDescription>
     </DialogHeader>
 
-    <div class="space-y-4 text-sm py-2 overflow-y-auto flex-1">
+    <div class="space-y-4 text-sm py-2 overflow-y-auto flex-1 text-justify">
       <div class="space-y-2">
         <div class="space-y-2">
           <img
-            src="@/assets/descriptions/mesorch/1.png"
+            src="@/assets/descriptions/mesorch.png"
             alt="Mesorch Framework Overview"
             class="w-full rounded-lg shadow"
           />

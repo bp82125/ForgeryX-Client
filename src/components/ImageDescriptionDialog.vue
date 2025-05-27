@@ -42,35 +42,24 @@ const methodComponents = {
   exif_as_language: defineAsyncComponent(() =>
     import("@/components/descriptions/ExifAsLanguageDescriptions.vue")
   ),
-  psccnet: defineAsyncComponent(() =>
-    import("@/components/descriptions/PSCCNetDescriptions.vue")
-  ),
+
   catnet: defineAsyncComponent(() =>
     import("@/components/descriptions/CATNetDescriptions.vue")
   ),
-  focal: defineAsyncComponent(() =>
-    import("@/components/descriptions/FocalDescriptions.vue")
-  ),
+
   wavelet: defineAsyncComponent(() =>
     import("@/components/descriptions/WaveletDescriptions.vue")
   ),
-  median: defineAsyncComponent(() =>
-    import("@/components/descriptions/MedianDescriptions.vue")
-  ),
+
   ela: defineAsyncComponent(() =>
     import("@/components/descriptions/ELADescriptions.vue")
   ),
   blocking: defineAsyncComponent(() =>
     import("@/components/descriptions/BlockingDescriptions.vue")
   ),
-  splicebuster: defineAsyncComponent(() =>
-    import("@/components/descriptions/SpliceBusterDescriptions.vue")
-  ),
+
   dq: defineAsyncComponent(() =>
     import("@/components/descriptions/DQDescriptions.vue")
-  ),
-  ghost: defineAsyncComponent(() =>
-    import("@/components/descriptions/GhostDescriptions.vue")
   ),
   mesorch: defineAsyncComponent(() =>
     import("@/components/descriptions/MesorchDescriptions.vue")

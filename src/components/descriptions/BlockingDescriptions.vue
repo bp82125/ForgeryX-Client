@@ -3,8 +3,8 @@
     <DialogHeader class="flex-shrink-0 py-2">
       <DialogTitle>JPEG blocking artifact inconsistencies (BLOCK)</DialogTitle>
       <DialogDescription>
-        Phát hiện ảnh JPEG bị chỉnh sửa một cách thụ động qua việc phân tích các
-        khối trong lưới nhiễu (BAG - Block Artifact Grid)
+        Phát hiện ảnh JPEG bị chỉnh sửa thông qua việc phân tích các khối trong
+        lưới nhiễu
       </DialogDescription>
     </DialogHeader>
 

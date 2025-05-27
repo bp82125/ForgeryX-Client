@@ -3,16 +3,16 @@
     <DialogHeader class="flex-shrink-0 py-2">
       <DialogTitle>TruFor</DialogTitle>
       <DialogDescription>
-        Tận dụng đầy đủ các manh mối để phát hiện và khoanh vùng ảnh bị chỉnh
+        Tận dụng đầy đủ các chi tiết để phát hiện và khoanh vùng ảnh bị chỉnh
         sửa một cách đáng tin cậy
       </DialogDescription>
     </DialogHeader>
 
-    <div class="space-y-4 text-sm py-2 overflow-y-auto flex-1">
+    <div class="space-y-4 text-sm py-2 overflow-y-auto flex-1 text-justify">
       <div class="space-y-2">
         <div class="space-y-2">
           <img
-            src="@/assets/descriptions/trufor/1.png"
+            src="@/assets/descriptions/trufor.png"
             alt="TruFor Framework Overview"
             class="w-full rounded-lg shadow"
           />
@@ -23,27 +23,17 @@
         <p>
           TruFor là một phương pháp giúp phát hiện ảnh đã qua chỉnh sửa bằng
           cách phân tích các dấu vết nhiễu tự nhiên bên trong ảnh. Khi một bức
-          ảnh được đưa vào, hệ thống sẽ trích xuất các đặc trưng nhiễu để tìm ra
-          dấu hiệu của việc bị chỉnh sửa. Từ đó, nó tạo ra một bản đồ bất thường
-          (anormaly map) để hiển thị những khu vực có khả năng bị chỉnh sửa.
+          ảnh được đưa vào, hệ thống sẽ trích xuất các đặc trưng nhiễu tên là
+          Noiseprint++, chứa đựng các dấu vết của việc chỉnh sửa. Sau đó ảnh đầu
+          vào cùng với đặc trưng nhiễu sẽ được đưa vào SegFormer, một mạng
+          Transformer dành riêng cho bài toán định vị vùng trên ảnh. Đầu ra của
+          mô hình này ra một bản đồ bất thường (anormaly map) để hiển thị những
+          khu vực có khả năng bị chỉnh sửa. Cùng với đó, mô hình cho ra một bản
+          đồ độ tin cậy (confidence map) để đánh giá mức độ chính xác của việc
+          dự báo. Từ đó, phương pháp này dễ dàng tính toán điểm toàn vẹn
+          (integrity score) của ảnh, giúp người dùng dễ dàng xác định mức độ
+          chính xác của kết quả đầu ra.
         </p>
-
-        <p>
-          Ngoài ra, TruFor còn tạo ra một bản đồ độ tin cậy (confidence map) để
-          đánh giá mức độ chính xác của việc dự báo. Từ đó, phương pháp này dễ
-          dàng tính toán điểm toàn vẹn (integrity score) của ảnh, giúp người
-          dùng dễ dàng xác định mức độ chính xác của kết quả đầu ra.
-        </p>
-        <div class="space-y-2">
-          <img
-            src="@/assets/descriptions/trufor/2.png"
-            alt="TruFor Framework Overview"
-            class="w-full rounded-lg shadow"
-          />
-          <p class="text-center text-xs text-gray-500">
-            Hình 2: Tầm quan trọng của bản đồ tin cậy (confidence map)
-          </p>
-        </div>
       </div>
 
       <div class="pt-2 border-t">
